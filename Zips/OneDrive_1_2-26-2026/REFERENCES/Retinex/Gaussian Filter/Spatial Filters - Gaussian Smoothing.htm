@@ -1,0 +1,264 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0046)http://www.cee.hw.ac.uk/hipr/html/gsmooth.html -->
+<HTML><HEAD><TITLE>Spatial Filters - Gaussian Smoothing</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=windows-1256">
+<META content="MSHTML 6.00.2900.2963" name=GENERATOR></HEAD>
+<BODY><A href="http://www.cee.hw.ac.uk/hipr/html/hipr_top.html"><IMG 
+src="Spatial Filters - Gaussian Smoothing_files/home.gif"></A> <A 
+href="http://www.cee.hw.ac.uk/hipr/html/median.html"><IMG 
+src="Spatial Filters - Gaussian Smoothing_files/left.gif"></A> <A 
+href="http://www.cee.hw.ac.uk/hipr/html/csmooth.html"><IMG 
+src="Spatial Filters - Gaussian Smoothing_files/right.gif"></A> <A 
+href="http://www.cee.hw.ac.uk/hipr/html/filtops.html"><IMG 
+src="Spatial Filters - Gaussian Smoothing_files/up.gif"></A> 
+<HR>
+<A name=1><IMG src="Spatial Filters - Gaussian Smoothing_files/mote.gif"></A>
+<H1>Gaussian Smoothing</H1>
+<P><STRONG>Common Names:</STRONG> Gaussian smoothing 
+<P>
+<H2>Brief Description</H2>
+<P>The Gaussian smoothing operator is a 2-D <A 
+href="http://www.cee.hw.ac.uk/hipr/html/convolve.html">convolution operator</A> 
+that is used to `blur' images and remove detail and noise. In this sense it is 
+similar to the <A href="http://www.cee.hw.ac.uk/hipr/html/mean.html">mean 
+filter</A>, but it uses a different kernel that represents the shape of a 
+Gaussian (`bell-shaped') hump. This kernel has some special properties which are 
+detailed below. 
+<P><A name=how><IMG 
+src="Spatial Filters - Gaussian Smoothing_files/mote.gif"></A>
+<H2>How It Works</H2>
+<P>The Gaussian distribution in 1-D has the form: 
+<P>
+<BLOCKQUOTE><IMG src="Spatial Filters - Gaussian Smoothing_files/eqngaus1.gif" 
+  align=bottom> </BLOCKQUOTE>
+<P>where <IMG src="Spatial Filters - Gaussian Smoothing_files/eqnsigma.gif" 
+align=middle> is the standard deviation of the distribution. We have also 
+assumed that the distribution has a mean of zero (<EM>i.e.</EM> it is centered 
+about the line <EM>x</EM>=0). The distribution is illustrated in Figure 1. 
+<P><BR>
+<BLOCKQUOTE><IMG 
+  src="Spatial Filters - Gaussian Smoothing_files/gauss1.gif"><BR></BLOCKQUOTE>
+<BLOCKQUOTE><STRONG>Figure 1</STRONG> 1-D Gaussian distribution with mean 0 
+  and <IMG src="Spatial Filters - Gaussian Smoothing_files/eqnsigma.gif" 
+  align=middle>=1 </BLOCKQUOTE><BR>
+<P>In 2-D, an isotropic (<EM>i.e.</EM> circularly symmetric) Gaussian has the 
+form: 
+<P>
+<BLOCKQUOTE><IMG src="Spatial Filters - Gaussian Smoothing_files/eqngaus2.gif" 
+  align=bottom> </BLOCKQUOTE>
+<P>This distribution is shown in Figure 2. 
+<P><BR>
+<BLOCKQUOTE><IMG 
+  src="Spatial Filters - Gaussian Smoothing_files/gauss2.gif"><BR></BLOCKQUOTE>
+<BLOCKQUOTE><STRONG>Figure 2</STRONG> 2-D Gaussian distribution with mean 
+  (0,0) and <IMG src="Spatial Filters - Gaussian Smoothing_files/eqnsigma.gif" 
+  align=middle>=1 </BLOCKQUOTE><BR>
+<P>The idea of Gaussian smoothing is to use this 2-D distribution as a 
+`point-spread' function, and this is achieved by convolution. Since the image is 
+stored as a collection of discrete pixels we need to produce a discrete 
+approximation to the Gaussian function before we can perform the convolution. In 
+theory, the Gaussian distribution is non-zero everywhere, which would require an 
+infinitely large convolution mask, but in practice it is effectively zero more 
+than about three standard deviations from the mean, and so we can truncate the 
+mask at this point. Figure 3 shows a suitable integer valued convolution mask 
+that approximates a Gaussian with a <IMG 
+src="Spatial Filters - Gaussian Smoothing_files/eqnsigma.gif" align=middle> of 
+1.4. 
+<P><BR>
+<BLOCKQUOTE><IMG 
+  src="Spatial Filters - Gaussian Smoothing_files/gausmask.gif"><BR></BLOCKQUOTE>
+<BLOCKQUOTE><STRONG>Figure 3</STRONG> Discrete approximation to Gaussian 
+  function with <IMG 
+  src="Spatial Filters - Gaussian Smoothing_files/eqnsigma.gif" 
+  align=middle>=1.4 </BLOCKQUOTE><BR>
+<P>Once a suitable mask has been calculated, then the Gaussian smoothing can be 
+performed using standard <A 
+href="http://www.cee.hw.ac.uk/hipr/html/convolve.html">convolution methods</A>. 
+The convolution can in fact be performed fairly quickly since the equation for 
+the 2-D isotropic Gaussian shown above is separable into <EM>x</EM> and 
+<EM>y</EM> components. Thus the 2-D convolution can be performed by first 
+convolving with a 1-D Gaussian in the <EM>x</EM> direction, and then convolving 
+with another 1-D Gaussian in the <EM>y</EM> direction. (The Gaussian is in fact 
+the <EM>only</EM> completely circularly symmetric operator which can be 
+decomposed in such a way.) Figure 4 shows the 1-D <EM>x</EM> component mask that 
+would be used to produce the full mask shown in Figure 3. The <EM>y</EM> 
+component is exactly the same but is oriented vertically. 
+<P><BR>
+<BLOCKQUOTE><IMG 
+  src="Spatial Filters - Gaussian Smoothing_files/gaus1d.gif"><BR></BLOCKQUOTE>
+<BLOCKQUOTE><STRONG>Figure 4</STRONG> One of the pair of 1-D convolution masks 
+  used to calculate the full mask shown in Figure 3 more quickly. 
+</BLOCKQUOTE><BR>
+<P>A further way to compute a Gaussian smoothing with a large standard deviation 
+is to convolve an image several times with a smaller Gaussian. While this is 
+computationally complex, it can have applicability if the processing is carried 
+out using a hardware pipeline. 
+<P>The Gaussian filter not only has utility in engineering applications. It is 
+also attracting attention from computational biologists because it has been 
+attributed with some amount of biological plausibility, <EM>e.g.</EM> some cells 
+in the visual pathways of the brain often have an approximately Gaussian 
+response. 
+<P><A name=guidelines><IMG 
+src="Spatial Filters - Gaussian Smoothing_files/mote.gif"></A>
+<H2>Guidelines for Use</H2>
+<P>The effect of Gaussian smoothing is to blur an image, in a similar fashion to 
+the <A href="http://www.cee.hw.ac.uk/hipr/html/mean.html">mean filter</A>. The 
+degree of smoothing is determined by the standard deviation of the Gaussian. 
+(Larger standard deviation Gaussians, of course, require larger convolution 
+masks in order to be accurately represented.) 
+<P>The Gaussian outputs a `weighted average' of each pixel's neighbourhood, with 
+the average weighted more towards the value of the central pixels. This is in 
+contrast to the mean filter's uniformly weighted average. Because of this, a 
+Gaussian provides gentler smoothing and preserves edges better than a similarly 
+sized mean filter. 
+<P>One of the principle justifications for using the Gaussian as a smoothing 
+filter is due to its <EM>frequency response</EM>. Most convolution based 
+smoothing filters act as <A 
+href="http://www.cee.hw.ac.uk/hipr/html/freqfilt.html">lowpass frequency 
+filters</A>. This means that their effect is to remove low spatial frequency 
+components from an image. The frequency response of a convolution filter, 
+<EM>i.e.</EM> its effect on different spatial frequencies, can be seen by taking 
+the <A href="http://www.cee.hw.ac.uk/hipr/html/fourier.html">Fourier 
+transform</A> of the filter. Figure 5 shows the frequency responses of a 1-D 
+mean filter with width 7 and also of a Gaussian filter with <IMG 
+src="Spatial Filters - Gaussian Smoothing_files/eqnsigma.gif" align=middle> = 3. 
+
+<P><BR>
+<BLOCKQUOTE><IMG 
+  src="Spatial Filters - Gaussian Smoothing_files/gausfreq.gif"><BR></BLOCKQUOTE>
+<BLOCKQUOTE><STRONG>Figure 5</STRONG> Frequency responses of Box 
+  (<EM>i.e.</EM> mean) filter (width 7 pixels) and Gaussian filter (<IMG 
+  src="Spatial Filters - Gaussian Smoothing_files/eqnsigma.gif" align=middle> = 
+  3 pixels). The spatial frequency axis is marked in cycles per pixel, and hence 
+  no value above 0.5 has a real meaning. </BLOCKQUOTE><BR>
+<P>Both filters attenuate high frequencies more than low frequencies, but the 
+mean filter exhibits oscillations in its frequency response. The Gaussian on the 
+other hand shows no oscillations. In fact, the shape of the frequency response 
+curve is itself (half a) Gaussian. So by choosing an appropriately sized 
+Gaussian filter we can be fairly confident about what range of spatial 
+frequencies are still present in the image after filtering, which is not the 
+case of the mean filter. This has consequences for some edge detection 
+techniques, as mentioned in the section on <A 
+href="http://www.cee.hw.ac.uk/hipr/html/zeros.html">zero crossings</A>. (The 
+Gaussian filter also turns out to be very similar to the optimal smoothing 
+filter for edge detection under the criteria used to derive the <A 
+href="http://www.cee.hw.ac.uk/hipr/html/canny.html">Canny edge detector</A>.) 
+<P>We use <A href="http://www.cee.hw.ac.uk/hipr/images/ben2.gif"><IMG 
+src="Spatial Filters - Gaussian Smoothing_files/ben2.gif"></A> to illustrate the 
+effect of smoothing with successively larger and larger Gaussian filters. 
+<P><A href="http://www.cee.hw.ac.uk/hipr/images/ben2gau1.gif"><IMG 
+src="Spatial Filters - Gaussian Smoothing_files/ben2gau1.gif"></A> shows the 
+effect of filtering with a Gaussian of <IMG 
+src="Spatial Filters - Gaussian Smoothing_files/eqnsigma.gif" align=middle> = 
+1.0 (and mask size 5x5). 
+<P><A href="http://www.cee.hw.ac.uk/hipr/images/ben2gau2.gif"><IMG 
+src="Spatial Filters - Gaussian Smoothing_files/ben2gau2.gif"></A> shows the 
+effect of filtering with a Gaussian of <IMG 
+src="Spatial Filters - Gaussian Smoothing_files/eqnsigma.gif" align=middle> = 
+2.0 (and mask size 9x9). 
+<P><A href="http://www.cee.hw.ac.uk/hipr/images/ben2gau3.gif"><IMG 
+src="Spatial Filters - Gaussian Smoothing_files/ben2gau3.gif"></A> shows the 
+effect of filtering with a Gaussian of <IMG 
+src="Spatial Filters - Gaussian Smoothing_files/eqnsigma.gif" align=middle> = 
+4.0 (and mask size 15x15). 
+<P>We now consider using the Gaussian filter for noise reduction. For example, 
+consider the image <A 
+href="http://www.cee.hw.ac.uk/hipr/images/fce5noi4.gif"><IMG 
+src="Spatial Filters - Gaussian Smoothing_files/fce5noi4.gif"></A> which has 
+been corrupted by <A 
+href="http://www.cee.hw.ac.uk/hipr/html/noise.html">Gaussian noise</A> with a 
+mean of zero and <IMG 
+src="Spatial Filters - Gaussian Smoothing_files/eqnsigma.gif" align=middle> = 8. 
+Smoothing this with a 5×5 Gaussian yields <A 
+href="http://www.cee.hw.ac.uk/hipr/images/fce5gsm1.gif"><IMG 
+src="Spatial Filters - Gaussian Smoothing_files/fce5gsm1.gif"></A>. (Compare 
+this result with that achieved by the <A 
+href="http://www.cee.hw.ac.uk/hipr/html/mean.html">mean</A> and <A 
+href="http://www.cee.hw.ac.uk/hipr/html/median.html">median</A> filters.) 
+<P><A href="http://www.cee.hw.ac.uk/hipr/html/noise.html">Salt and pepper 
+noise</A> is more challenging for a Gaussian filter. Here we will smooth the 
+image <A href="http://www.cee.hw.ac.uk/hipr/images/sta2noi2.gif"><IMG 
+src="Spatial Filters - Gaussian Smoothing_files/sta2noi2.gif"></A>, which has 
+been corrupted by 1% salt and pepper noise (<EM>i.e.</EM> individual bits have 
+been flipped with probability 1%). <A 
+href="http://www.cee.hw.ac.uk/hipr/images/sta2gsm1.gif"><IMG 
+src="Spatial Filters - Gaussian Smoothing_files/sta2gsm1.gif"></A> shows the 
+result of Gaussian smoothing (using the same convolution as above). (Compare 
+this with the original <A 
+href="http://www.cee.hw.ac.uk/hipr/images/sta2.gif"><IMG 
+src="Spatial Filters - Gaussian Smoothing_files/sta2.gif"></A>.) Notice that 
+much of the noise still exists and that, although it has decreased in magnitude 
+somewhat, it has been smeared out over a larger spatial region. Increasing the 
+standard deviation continues to reduce/blur the intensity of the noise, but also 
+attenuates high frequency detail (<EM>e.g.</EM> edges) significantly, as shown 
+in <A href="http://www.cee.hw.ac.uk/hipr/images/sta2gsm2.gif"><IMG 
+src="Spatial Filters - Gaussian Smoothing_files/sta2gsm2.gif"></A>. This type of 
+noise is better reduced using <A 
+href="http://www.cee.hw.ac.uk/hipr/html/median.html">median filtering</A>, <A 
+href="http://www.cee.hw.ac.uk/hipr/html/csmooth.html">conservative smoothing</A> 
+or <A href="http://www.cee.hw.ac.uk/hipr/html/crimmins.html">Crimmins Speckle 
+Removal</A>. 
+<P>
+<H2>Exercises</H2>
+<P>
+<OL>
+  <P>
+  <LI>Starting from the <A 
+  href="http://www.cee.hw.ac.uk/hipr/html/noise.html">Gaussian noise</A> (mean 
+  0, <IMG src="Spatial Filters - Gaussian Smoothing_files/eqnsigma.gif" 
+  align=middle> = 13) corrupted image <A 
+  href="http://www.cee.hw.ac.uk/hipr/images/fce5noi5.gif"><IMG 
+  src="Spatial Filters - Gaussian Smoothing_files/fce5noi5.gif"></A>, compute 
+  both <A href="http://www.cee.hw.ac.uk/hipr/html/mean.html">mean filter</A> and 
+  Gaussian filter smoothing at various scales, and compare each in terms of 
+  noise removal vs. loss of detail. 
+  <P></P>
+  <LI>At how many standard deviations from the mean does a Gaussian fall to 5% 
+  of its peak value? On the basis of this suggest a suitable square mask size 
+  for a Gaussian filter with <IMG 
+  src="Spatial Filters - Gaussian Smoothing_files/eqnsigma.gif" align=middle> = 
+  <EM>s</EM>. 
+  <P></P>
+  <LI>Estimate the frequency response for a Gaussian filter by Gaussian 
+  smoothing an image, and taking its <A 
+  href="http://www.cee.hw.ac.uk/hipr/html/fourier.html">Fourier transform</A> 
+  both before and afterwards. Compare this with the frequency response of a <A 
+  href="http://www.cee.hw.ac.uk/hipr/html/mean.html">mean filter</A>. 
+  <P></P>
+  <LI>How does the time taken to smooth with a Gaussian filter compare to the 
+  time taken to smooth with a <A 
+  href="http://www.cee.hw.ac.uk/hipr/html/mean.html">mean filter</A> <EM>for a 
+  mask of the same size?</EM> Notice that in both cases the convolution can be 
+  sped up considerably by exploiting certain features of the kernel. 
+  <P></P></LI></OL>
+<P>
+<H2>References</H2>
+<P><STRONG>E. Davies</STRONG> <EM>Machine Vision: Theory, Algorithms and 
+Practicalities</EM>, Academic Press, 1990, pp 42 - 44. 
+<P><STRONG>R. Gonzalez and R. Woods</STRONG> <EM>Digital Image Processing</EM>, 
+Addison-Wesley Publishing Company, 1992, p 191. 
+<P><STRONG>R. Haralick and L. Shapiro</STRONG> <EM>Computer and Robot 
+Vision</EM>, Addison-Wesley Publishing Company, 1992, Vol 1, Chap 7. 
+<P><STRONG>B. Horn</STRONG> <EM>Robot Vision</EM>, MIT Press, 1986, Chap 8. 
+<P><STRONG>D. Vernon</STRONG> <EM>Machine Vision</EM>, Prentice-Hall, 1991, pp 
+59 - 61, 214. 
+<P>
+<H2>Local Information</H2>
+<P>General advice about the local HIPR installation is available <A 
+href="http://www.cee.hw.ac.uk/hipr/html/local.txt">here</A> 
+<P><BR><BR><BR>
+<HR>
+<STRONG><EM>Hypermedia Image Processing Reference</EM></STRONG><BR><BR>
+<ADDRESS><A href="http://www.cee.hw.ac.uk/hipr/html/copyrght.html">©1994 Bob 
+Fisher, Simon Perkins, Ashley Walker and Erik Wolfart</A><BR>Department of 
+Artificial Intelligence<BR>University of Edinburgh<BR>UK<BR></ADDRESS>
+<P><A href="http://www.cee.hw.ac.uk/hipr/html/hipr_top.html"><IMG 
+src="Spatial Filters - Gaussian Smoothing_files/home.gif"></A> <A 
+href="http://www.cee.hw.ac.uk/hipr/html/median.html"><IMG 
+src="Spatial Filters - Gaussian Smoothing_files/left.gif"></A> <A 
+href="http://www.cee.hw.ac.uk/hipr/html/csmooth.html"><IMG 
+src="Spatial Filters - Gaussian Smoothing_files/right.gif"></A> <A 
+href="http://www.cee.hw.ac.uk/hipr/html/filtops.html"><IMG 
+src="Spatial Filters - Gaussian Smoothing_files/up.gif"></A><BR>
+<HR>
+</BODY></HTML>

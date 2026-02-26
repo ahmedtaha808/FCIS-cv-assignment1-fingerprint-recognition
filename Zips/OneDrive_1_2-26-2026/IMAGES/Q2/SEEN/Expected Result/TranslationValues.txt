@@ -1,0 +1,2 @@
+Image#1: Tx = 35, Ty = 0
+Image#2: Tx = 37, Ty = -13

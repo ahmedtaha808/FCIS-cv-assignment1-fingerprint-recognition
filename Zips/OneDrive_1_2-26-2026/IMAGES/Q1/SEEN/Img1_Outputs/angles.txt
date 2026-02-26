@@ -1,0 +1,4 @@
+index:96
+middle:112
+ring:123
+little:138

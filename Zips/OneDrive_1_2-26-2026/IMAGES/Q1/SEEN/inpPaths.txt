@@ -1,0 +1,5 @@
+\Img1\hand.jpg
+\Img1\index_Mask.bmp
+\Img1\middle_Mask.bmp
+\Img1\ring_Mask.bmp
+\Img1\little_Mask.bmp

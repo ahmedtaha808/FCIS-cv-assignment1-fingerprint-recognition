@@ -1,0 +1,11 @@
+
+the size of the kernel can be approximated as 2n + 1 pixels,
+
+where n is the nearest integer to 3.7 * Segma - 0.5
+
+
+
+
+2D Gaussian can be performed by two 1D Gaussian :
+
+G(x,y) * I(x,y) = g(x) * [g(y) * I(x,y)]
