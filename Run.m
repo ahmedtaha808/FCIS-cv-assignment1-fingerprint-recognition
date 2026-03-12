@@ -1,0 +1,1 @@
+ApplyAll('Images/00.bmp', 1000, 'Output');
